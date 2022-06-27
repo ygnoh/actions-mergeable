@@ -1,0 +1,5 @@
+name: "Mergeable"
+description: "Check easily if a PR is mergeable"
+runs:
+  using: "node12"
+  main: "index.js"
