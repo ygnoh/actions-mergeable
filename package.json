@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/ygnoh/actions-mergeable/issues"
   },
-  "homepage": "https://github.com/ygnoh/actions-mergeable#readme"
+  "homepage": "https://github.com/ygnoh/actions-mergeable#readme",
+  "dependencies": {
+    "@actions/core": "^1.9.0"
+  }
 }
