@@ -3,3 +3,10 @@ description: "Check easily if a PR is mergeable"
 runs:
   using: "node12"
   main: "index.js"
+inputs:
+  pr:
+    description: "hi"
+    required: true
+  prNumber:
+    description: "hello"
+    required: true
