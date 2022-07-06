@@ -93,35 +93,39 @@ class Reviewer {
 }
 
 (async () => {
-    const [reviews, requestedReviewers] = await Promise.all([getReviews(), getRequestedReviewers()]);
+    try {
+        const [reviews, requestedReviewers] = await Promise.all([getReviews(), getRequestedReviewers()]);
 
-    requestedReviewers.forEach(reviewer => {
-        Reviewer.create(reviewer).updateState(STATE.REQUESTED);
-    });
+        requestedReviewers.forEach(reviewer => {
+            Reviewer.create(reviewer).updateState(STATE.REQUESTED);
+        });
 
-    reviews.reverse().forEach(review => {
-        const {user, state} = review;
+        reviews.reverse().forEach(review => {
+            const {user, state} = review;
 
-        Reviewer.create(user).updateState(STATE[state]);
-    })
+            Reviewer.create(user).updateState(STATE[state]);
+        })
 
-    const reviewers = Reviewer.getReviewers();
+        const reviewers = Reviewer.getReviewers();
 
-    if (reviewers.some(reviewer => reviewer.changesRequested)) {
-        core.setFailed("Someone requested changes");
+        if (reviewers.some(reviewer => reviewer.changesRequested)) {
+            core.setFailed("Someone requested changes");
 
-        return;
+            return;
+        }
+
+        const totalCount = reviewers.length;
+        const approvedCount = reviewers.filter(reviewer => reviewer.approved).length;
+        const MINIMUM_APPROVED_COUNT = 3;
+
+        if (approvedCount >= Math.max(MINIMUM_APPROVED_COUNT, totalCount / 2)) { // todo import condition
+            core.notice("It's time to merge!");
+
+            return;
+        }
+
+        core.setFailed("Not enough approvals");
+    } catch (e) {
+        core.setFailed(e.message);
     }
-
-    const totalCount = reviewers.length;
-    const approvedCount = reviewers.filter(reviewer => reviewer.approved).length;
-    const MINIMUM_APPROVED_COUNT = 3;
-
-    if (approvedCount >= Math.max(MINIMUM_APPROVED_COUNT, totalCount / 2)) { // todo import condition
-        core.notice("It's time to merge!");
-
-        return;
-    }
-
-    core.setFailed("Not enough approvals");
 })();
