@@ -4,9 +4,6 @@ runs:
   using: "node12"
   main: "index.js"
 inputs:
-  pr:
-    description: "hi"
-    required: true
-  prNumber:
-    description: "hello"
+  token:
+    description: "github token"
     required: true
