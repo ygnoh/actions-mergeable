@@ -108,7 +108,7 @@ class Reviewer {
     const reviewers = Reviewer.getReviewers();
 
     if (reviewers.some(reviewer => reviewer.changesRequested)) {
-        console.log("unmergeable");
+        core.setFailed("Someone requested changes");
 
         return;
     }
@@ -118,10 +118,10 @@ class Reviewer {
     const MINIMUM_APPROVED_COUNT = 3;
 
     if (approvedCount >= Math.max(MINIMUM_APPROVED_COUNT, totalCount / 2)) { // todo import condition
-        console.log("mergeable");
+        core.notice("It's time to merge!");
 
         return;
     }
 
-    console.log("unmergeable");
+    core.setFailed("Not enough approvals");
 })();
