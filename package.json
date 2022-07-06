@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/ygnoh/actions-mergeable#readme",
   "dependencies": {
-    "@actions/core": "^1.9.0"
+    "@actions/core": "^1.9.0",
+    "axios": "^0.27.2"
   }
 }
