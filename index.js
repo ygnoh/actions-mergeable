@@ -74,6 +74,7 @@ class Reviewer {
     }
 
     _state = STATE.INIT;
+    _participated = false;
 
     updateState(state) {
         if (!this._isAcceptable(state)) {
@@ -81,6 +82,14 @@ class Reviewer {
         }
 
         this._state = state;
+    }
+
+    participate() {
+        this._participated = true;
+    }
+
+    get participated() {
+        return this._participated;
     }
 
     get approved() {
@@ -101,15 +110,24 @@ class Reviewer {
         });
 
         reviews.reverse().forEach(review => {
-            const {user, state} = review;
+            const {user: userData, state} = review;
+            const user = Reviewer.create(userData)
 
-            Reviewer.create(user).updateState(STATE[state]);
+            user.updateState(STATE[state]);
+            user.participate();
         })
 
         const reviewers = Reviewer.getReviewers();
 
         if (reviewers.some(reviewer => reviewer.changesRequested)) {
             core.setFailed("Someone requested changes");
+
+            return;
+        }
+
+        if (!reviewers.filter(reviewer => reviewer.participated)
+            .every(reviewer => reviewer.approved)) {
+            core.setFailed("All participants must approve");
 
             return;
         }
