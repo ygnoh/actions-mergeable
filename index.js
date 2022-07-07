@@ -1,9 +1,9 @@
 const core = require("@actions/core");
 const axios = require("axios");
 
-const {GITHUB_API_URL, GITHUB_REPOSITORY, GITHUB_REF_NAME} = process.env;
+const {GITHUB_API_URL, GITHUB_REPOSITORY, GITHUB_REF} = process.env;
 const BASE_URL = `${GITHUB_API_URL}/repos/${GITHUB_REPOSITORY}`;
-const PR_NUMBER = GITHUB_REF_NAME.split("/")[0];
+const PR_NUMBER = GITHUB_REF.match(/^refs\/pull\/(.+)\/merge$/)[1];
 
 const getReviews = async () => {
     const [{data: {assignees}}, {data: reviews}] = await Promise.all([
